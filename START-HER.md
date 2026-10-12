@@ -1,4 +1,4 @@
-# StueForm 1.0 — din private hjemmetræningsapp
+# StueForm 1.1 — din private hjemmetræningsapp
 
 En færdig, responsiv og installationsklar webapp til iPhone, Android og computer. Bygget i almindelig HTML, CSS og JavaScript — uden frameworks, abonnementer, trackers, eksterne APIs eller server.
 
@@ -6,7 +6,7 @@ En færdig, responsiv og installationsklar webapp til iPhone, Android og compute
 
 - **Hurtig start** direkte fra forsiden: vælg en standard på 10, 20 eller 30 minutter.
 - **Dagens pas:** redigér runder, opvarmning, pauser, rækkefølge, øvelser og individuelle gentagelser/sekunder. Vælg eventuelt kun kropsvægt.
-- **8 øvelser** med lokale billeder, skriftlig teknikguide, advarsler og alternativer: kettlebell deadlift, kettlebell swings, goblet squat, kettlebell row, armbøjninger, mountain climbers, dead bug og planke med skuldertap.
+- **8 øvelser** med nye, lokale illustrationer (oversigtsbillede og detaljeret teknikplakat), skriftlig teknikguide, advarsler og alternativer: kettlebell deadlift, kettlebell swings, goblet squat, kettlebell row, armbøjninger, mountain climbers, dead bug og planke med skuldertap.
 - **Under træning:** opvarmnings- og pausetimer, trin for trin, ændringer undervejs, udskift øvelse, spring over, stop og gem delvist eller kassér.
 - **Progression:** giv passet en indsats-vurdering; du kan selv vælge at øge gentagelserne i din standard næste gang. Swings øges ikke automatisk.
 - **Historik:** træningspas, ugentlig oversigt og valgfri registrering/graf over taljemål.
@@ -58,9 +58,23 @@ Der kan ikke punktforbrændes mavefedt. Træningen understøtter muskler, kondit
 - `styles.css` — responsivt design til telefon/desktop
 - `manifest.webmanifest` — installering som app
 - `sw.js` — offline-cache
-- `assets/*.webp` — inkluderede øvelsesbilleder, genereret til appen
+- `assets/{øvelse}.webp` — nye, tydelige øvelsesudsnit til bibliotek og træning
+- `assets/{øvelse}-guide.webp` — 8 komplette start/slut-illustrationer med teknikråd (tryk for stor visning)
 - `assets/icon-192.png`, `assets/icon-512.png` — appikon
 
 Appen kræver HTTPS eller `localhost` for Service Worker/PWA. Du kan teste designet ved at åbne `index.html` lokalt, men offline-installation kræver at den hostes på HTTPS.
 
-**Version:** 1.0, oktober 2026. Du skal selv uploade den medfølgende kode, før appen har en liveadresse.
+**Version:** 1.1, oktober 2026. Du skal selv uploade den medfølgende kode, før appen har en liveadresse.
+
+
+## Opdater en allerede publiceret StueForm-app
+
+1. Download ZIP-filen med version 1.1, og **pak den ud på computeren**.
+2. Åbn dit **eksisterende** `stueform`-repository på GitHub, ikke et nyt repository.
+3. Vælg **Add file → Upload files**, og træk filerne `index.html`, `app.js`, `styles.css`, `sw.js`, `manifest.webmanifest` samt hele mappen `assets` over i roden af repository'et. GitHub skal beholde mappestrukturen `assets/...`. Overskriv de gamle filer ved at committe ændringerne. De øvrige instruktionsfiler kan også uploades.
+4. Vent på GitHub Pages-udgivelsen. Åbn derefter appen og genindlæs én eller to gange, så offline-cachen opdateres.
+5. **Dine lokale data bevares**, fordi version 1.1 stadig benytter den eksisterende lagringsnøgle. Sørg for at bevare den samme GitHub Pages-adresse og undgå at slette browserdata. Lav eventuelt en JSON-backup i Indstillinger først.
+
+Bemærk: Dette er en ZIP med kildefiler. Upload ikke selve ZIP-filen som ét enkelt element til repository-roden, for GitHub Pages pakker den ikke automatisk ud.
+
+**Teknisk præcisering:** Illustration for *Planke med skuldertap* viser en grundlæggende underarmsplanke, ikke selve håndløftet. Følg derfor den skriftlige instruktion for skuldertap; billedet alene er ikke en fuldstændig teknikvejledning til denne variation.
