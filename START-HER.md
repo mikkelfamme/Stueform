@@ -1,4 +1,4 @@
-# StueForm 1.1 — din private hjemmetræningsapp
+# StueForm 1.2 — din private hjemmetræningsapp
 
 En færdig, responsiv og installationsklar webapp til iPhone, Android og computer. Bygget i almindelig HTML, CSS og JavaScript — uden frameworks, abonnementer, trackers, eksterne APIs eller server.
 
@@ -64,17 +64,29 @@ Der kan ikke punktforbrændes mavefedt. Træningen understøtter muskler, kondit
 
 Appen kræver HTTPS eller `localhost` for Service Worker/PWA. Du kan teste designet ved at åbne `index.html` lokalt, men offline-installation kræver at den hostes på HTTPS.
 
-**Version:** 1.1, oktober 2026. Du skal selv uploade den medfølgende kode, før appen har en liveadresse.
+**Version:** 1.2, oktober 2026. Du skal selv uploade den medfølgende kode, før appen har en liveadresse.
 
 
 ## Opdater en allerede publiceret StueForm-app
 
-1. Download ZIP-filen med version 1.1, og **pak den ud på computeren**.
+1. Download ZIP-filen med version 1.2, og **pak den ud på computeren**.
 2. Åbn dit **eksisterende** `stueform`-repository på GitHub, ikke et nyt repository.
 3. Vælg **Add file → Upload files**, og træk filerne `index.html`, `app.js`, `styles.css`, `sw.js`, `manifest.webmanifest` samt hele mappen `assets` over i roden af repository'et. GitHub skal beholde mappestrukturen `assets/...`. Overskriv de gamle filer ved at committe ændringerne. De øvrige instruktionsfiler kan også uploades.
 4. Vent på GitHub Pages-udgivelsen. Åbn derefter appen og genindlæs én eller to gange, så offline-cachen opdateres.
-5. **Dine lokale data bevares**, fordi version 1.1 stadig benytter den eksisterende lagringsnøgle. Sørg for at bevare den samme GitHub Pages-adresse og undgå at slette browserdata. Lav eventuelt en JSON-backup i Indstillinger først.
+5. **Dine lokale data bevares**, fordi version 1.2 stadig benytter den eksisterende lagringsnøgle. Sørg for at bevare den samme GitHub Pages-adresse og undgå at slette browserdata. Lav eventuelt en JSON-backup i Indstillinger først.
 
 Bemærk: Dette er en ZIP med kildefiler. Upload ikke selve ZIP-filen som ét enkelt element til repository-roden, for GitHub Pages pakker den ikke automatisk ud.
 
 **Teknisk præcisering:** Illustration for *Planke med skuldertap* viser en grundlæggende underarmsplanke, ikke selve håndløftet. Følg derfor den skriftlige instruktion for skuldertap; billedet alene er ikke en fuldstændig teknikvejledning til denne variation.
+
+
+## Hvis du stadig ser gamle illustrationer efter upload
+
+1. Kontrollér i GitHub, at **`index.html`, `app.js`, `styles.css`, `sw.js` og hele `assets/`** er blevet erstattet. Der skal være 17 `.webp`-filer under `assets/`.
+2. Vent, til **Settings → Pages** viser den seneste udgivelse (eller til GitHub Actions/Pages har grønt flueben).
+3. Åbn først appen i en almindelig browser via din Pages-adresse med **`?v=12`** bagpå, fx `https://BRUGERNAVN.github.io/stueform/?v=12`. Denne URL omgår den tidligere cachelagrede forside.
+4. Se efter mærket **v1.2** øverst. Gå til **Øvelser** og vælg en øvelse. Det store illustration-kort findes under øvelsens detaljer.
+5. Hvis du bruger app-ikonet på hjemmeskærmen: Luk appen helt, åbn den igen, og vent på at opdateringen installeres. Gør det om nødvendigt to gange.
+6. **Slet ikke browserdata, offlinecache eller appen**, hvis du har træningshistorik. Eksportér først en JSON-backup under Indstillinger. Nulstil kun browserdata som sidste udvej efter backup.
+
+`assets/` skal ligge **i roden af repository'et, ved siden af `index.html`**; ikke i en ekstra undermappe, og ZIP-filen skal pakkes ud før upload.

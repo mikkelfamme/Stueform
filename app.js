@@ -1,4 +1,4 @@
-/* StueForm 1.0 – statisk/offline, ingen analytics eller server. */
+/* StueForm 1.2 – statisk/offline, ingen analytics eller server. */
 'use strict';
 
 const EXERCISES = [
@@ -95,6 +95,7 @@ const ICONS = {
   chevron:'<path d="m9 6 6 6-6 6"/>'
 };
 function icon(name){return `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name]||ICONS.info}</svg>`;}
+const APP_VERSION='1.2';
 const KEY='stueform-app-v1';
 const MODE_NAMES={'10':'Hurtig','20':'Standard','30':'Udvidet'};
 const CATEGORIES={alle:'Alle',kettlebell:'Kettlebell',kropsvaegt:'Kropsvægt',kondition:'Kondition',core:'Mave/core'};
@@ -120,18 +121,18 @@ function fmtDateTime(d){return new Date(d).toLocaleString('da-DK',{day:'numeric'
 function formatSeconds(s){s=Math.max(0,Math.ceil(s));return `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;}
 function periodStats(days=30){const earliest=Date.now()-days*864e5;const items=state.history.filter(h=>new Date(h.date).getTime()>=earliest);const minutes=items.reduce((sum,h)=>sum+(Number(h.minutes)||0),0);return{count:items.length,minutes,days:new Set(items.map(h=>h.date.slice(0,10))).size};}
 function estimate(d){let seconds=d.warmup*60;const perRound=d.ids.reduce((sum,id)=>{const e=E[id],t=d.targets[id]||e.default;return sum+(e.mode==='seconds'?t:Math.max(20,t*(e.perSide?2:1)*2.6));},0);seconds+=perRound*d.rounds;const total=d.ids.length*d.rounds;seconds+=Math.max(0,total-d.rounds)*d.exerciseRest + Math.max(0,d.rounds-1)*d.roundRest;return Math.max(1,Math.round(seconds/60));}
-function img(e){return `./assets/${e.id}.webp`;}
-function imgGuide(e){return `./assets/${e.id}-guide.webp`;}
+function img(e){return `./assets/${e.id}.webp?v=${APP_VERSION}`;}
+function imgGuide(e){return `./assets/${e.id}-guide.webp?v=${APP_VERSION}`;}
 function targetText(e,n){return e.mode==='seconds'?`${n} sekunder`:`${n} gentagelser${e.perSide?' pr. side':''}`;}
 function button(label,action,cls='',attrs=''){return `<button type="button" class="button ${cls}" data-action="${action}" ${attrs}>${label}</button>`;}
 function stepper(kind,value,min,max,step,id=''){return `<div class="value-stepper"><button type="button" class="stepper-button" data-action="adjust" data-kind="${kind}" data-id="${id}" data-delta="-${step}" aria-label="Sænk værdi">−</button><strong>${value}</strong><button type="button" class="stepper-button" data-action="adjust" data-kind="${kind}" data-id="${id}" data-delta="${step}" aria-label="Hæv værdi">+</button></div>`;}
 function show(view){ui.view=view;render();window.scrollTo({top:0,behavior:'instant'});}
-function header(){const active=!!state.workout;return `<a class="brand" href="#hjem" data-nav="home" aria-label="StueForm, gå til forsiden"><span class="brand-mark">${icon('dumbbell')}</span><span class="brand-text"><strong>StueForm</strong><small>Din træning. Dit tempo.</small></span></a><span class="header-right">${active?'<span class="header-badge">● Træning i gang</span>':'<span class="header-badge">100 % lokal</span>'}<button class="icon-button" data-nav="settings" aria-label="Åbn indstillinger">${icon('settings')}</button></span>`;}
+function header(){const active=!!state.workout;return `<a class="brand" href="#hjem" data-nav="home" aria-label="StueForm, gå til forsiden"><span class="brand-mark">${icon('dumbbell')}</span><span class="brand-text"><strong>StueForm</strong><small>Din træning. Dit tempo.</small></span></a><span class="header-right"><span class="version-tag" aria-label="StueForm version ${APP_VERSION}">v${APP_VERSION}</span>${active?'<span class="header-badge">● Træning i gang</span>':'<span class="header-badge">100 % lokal</span>'}<button class="icon-button" data-nav="settings" aria-label="Åbn indstillinger">${icon('settings')}</button></span>`;}
 function nav(){const items=[['home','home','Hjem'],['build','bolt','Træning'],['library','book','Øvelser'],['history','chart','Historik'],['settings','settings','Indstillinger']];return items.map(([v,ic,label])=>`<button type="button" class="nav-item ${(ui.view===v||(ui.view==='workout'&&v==='build'))?'active':''}" data-nav="${v}" aria-label="${label}" ${((ui.view===v||(ui.view==='workout'&&v==='build'))?'aria-current="page"':'')}>${icon(ic)}<span>${label}</span></button>`).join('');}
 function callout(msg,orange=false){return `<div class="callout ${orange?'orange':''}">${icon(orange?'info':'check')}<div>${msg}</div></div>`;}
 function heroStats(){const p=periodStats();return `<div class="stats-grid"><div class="stat"><span class="num">${p.count}</span><small>træningspas / 30 dage</small></div><div class="stat"><span class="num">${p.minutes}</span><small>minutter inkl. pauser</small></div><div class="stat"><span class="num">${p.days}</span><small>aktive dage</small></div></div>`;}
 function modeTabs(selected=ui.mode){return `<div class="preset-grid">${Object.keys(MODE_NAMES).map((k,i)=>`<button class="preset ${selected===k?'selected':''}" data-action="select-mode" data-mode="${k}" aria-pressed="${selected===k}"><span class="preset-icon">${['⚡','●','↗'][i]}</span><strong>${k} min</strong><span>${MODE_NAMES[k]}</span><small>${state.presets[k].rounds} ${state.presets[k].rounds===1?'runde':'runder'}</small></button>`).join('')}</div>`;}
-function home(){const p=periodStats();return `<section class="hero"><div class="hero-text"><span class="eyebrow">FLEKSIBEL HJEMMETRÆNING</span><h1>Stærkere krop.<br><em>Dit eget tempo.</em></h1><p>Styrke, puls og core. Ingen faste dage. Kun din kropsvægt og kettlebell på ${state.settings.weight} kg.</p>${button(`${icon('play')} ${state.workout?'Fortsæt træning':'Start valgt pas'}`,state.workout?'resume':'quick-start')}</div><img src="./assets/squat-home.webp" alt="Illustration af goblet squat med kettlebell"/></section>
+function home(){const p=periodStats();return `<section class="hero"><div class="hero-text"><span class="eyebrow">FLEKSIBEL HJEMMETRÆNING</span><h1>Stærkere krop.<br><em>Dit eget tempo.</em></h1><p>Styrke, puls og core. Ingen faste dage. Kun din kropsvægt og kettlebell på ${state.settings.weight} kg.</p>${button(`${icon('play')} ${state.workout?'Fortsæt træning':'Start valgt pas'}`,state.workout?'resume':'quick-start')}</div><img src="./assets/squat-home.webp?v=1.2" alt="Illustration af goblet squat med kettlebell"/></section>
   ${state.workout?`<div class="space-top">${callout('Du har et igangværende pas. Det er gemt på denne enhed.')}</div>`:''}
   <div class="section-heading"><h2>Hvor meget tid har du?</h2><p>Vælg fra gang til gang</p></div>${modeTabs()}
   <div class="space-top">${button(`Tilpas dagens træning ${icon('arrow')}`,'go-build','full')}</div>
@@ -273,4 +274,24 @@ document.addEventListener('visibilitychange',()=>{if(document.visibilityState===
 window.addEventListener('beforeunload',releaseWakeLock);
 render();tick();setInterval(tick,1000);
 if(state.workout)acquireWakeLock();
-if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+if('serviceWorker' in navigator)window.addEventListener('load',()=>{
+  const hadController=!!navigator.serviceWorker.controller;
+  navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).then(reg=>{
+    // The update request is separate from localStorage: no exercise records are changed.
+    reg.update().catch(()=>{});
+    if(hadController) navigator.serviceWorker.addEventListener('controllerchange',()=>{
+      if(state.workout){toast('Appen er opdateret. Genindlæs, når du har afsluttet træningen.');return;}
+      const key='stueform-auto-refresh-1.2';
+      if(!sessionStorage.getItem(key)){sessionStorage.setItem(key,'yes');location.reload();}
+    });
+  }).catch(()=>{});
+});
+
+// If an asset was not uploaded to GitHub, show a readable error in place.
+document.addEventListener('error',event=>{
+  const image=event.target;
+  if(!(image instanceof HTMLImageElement) || !image.src.includes('/assets/')) return;
+  image.classList.add('missing-illustration');
+  image.alt='Billedfilen mangler på GitHub. Upload hele assets-mappen og opdatér siden.';
+  image.title=image.alt;
+},true);
